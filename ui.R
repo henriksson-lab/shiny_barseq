@@ -6,10 +6,11 @@ library(ggplot2)
 ########### Samplemeta #########################################################
 ################################################################################
 
-tab_samplemeta <- sidebarLayout(
+tab_samplemeta <- #sidebarLayout(
   
-  sidebarPanel(
+#  sidebarPanel(
     
+  fluidPage(
     selectInput(
       inputId = "samplemeta_pool",
       label = "Pool:",
@@ -17,13 +18,13 @@ tab_samplemeta <- sidebarLayout(
       multiple = FALSE,
       choices = names(all_samplemeta), 
       selected = names(all_samplemeta)[1]
-    )
+    ),
 
-  ),
-  mainPanel(
-    h3("UMAPs pool overview"),
+ # ),
+#  mainPanel(
+    #h3("UMAPs pool overview"),
     plotOutput(outputId = "plotSamplemetaUmap", height = "700px")
-  )
+  #)
 )
 
 
@@ -116,8 +117,8 @@ ui <- fluidPage(
   titlePanel("Bushell lab barseq viewer"),
 
   tabsetPanel(type = "tabs",
-              tabPanel("GRstats", tab_grstats),
-              tabPanel("Samplemeta", tab_samplemeta),
+              tabPanel("Gene RGRs", tab_grstats),
+              tabPanel("Pool overviews", tab_samplemeta),
               tabPanel("About", tab_about),
   )
   

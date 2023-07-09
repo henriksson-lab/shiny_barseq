@@ -1,4 +1,6 @@
 library(plotly)
+library(Cairo)
+options(shiny.usecairo=T)
 
 if(FALSE){
   #To run this app
@@ -57,8 +59,8 @@ server <- function(input, output, session) {
     p4 <- ggplot(samplemeta, aes(umap1,umap2,color=is_input))+geom_point()
     p5 <- ggplot(samplemeta, aes(umap1,umap2,color=genotype))+geom_point()
     p6 <- ggplot(samplemeta, aes(umap1,umap2,color=primed))+geom_point()
-    p7 <- ggplot(samplemeta, aes(umap1,umap2,color=pool))+geom_point()
-    ptot <- p1/p2|p3/p4|p5/p6|p7
+    #p7 <- ggplot(samplemeta, aes(umap1,umap2,color=pool))+geom_point()
+    ptot <- p1/p2|p3/p4|p5/p6 #|p7
     ptot    
     
 
@@ -142,7 +144,7 @@ server <- function(input, output, session) {
       print("missing scatter cond")
       theplot <- ggplot() + theme_void()
     }
-    theplot  %>% ggplotly(source="plot_grstats_scatterplot") %>% event_register("plotly_click")
+    theplot %>% ggplotly(source="plot_grstats_scatterplot") %>% event_register("plotly_click")
   })
   
   
@@ -190,14 +192,11 @@ server <- function(input, output, session) {
             ggtitle(current_gene))
       }
 
-
     } else {
       print(paste("gene not in tc",current_gene))
       ggplotly(ggplot() + theme_void())
     }
-    
-    
-    
+
   })
   
     
