@@ -32,70 +32,91 @@ tab_samplemeta <- #sidebarLayout(
 ########### Gene viewer ########################################################
 ################################################################################
 
-tab_grstats <- sidebarLayout(
+tab_grstats <- fluidPage(
+    column(6,
+      wellPanel(
+        
+        plotlyOutput("plot_grstats_volcano", height = "400px"),
+        
+        selectInput(
+          inputId = "grstats_pool",
+          label = "Pool:",
+          selectize = FALSE,
+          multiple = FALSE,
+          choices = names(all_grstats), 
+          selected = names(all_grstats)[1]
+        ),
+        
+        selectInput(
+          inputId = "grstats_volcano",
+          label = "Volcano:",
+          selectize = TRUE,
+          multiple = FALSE,
+          choices = c(""), 
+          selected = NULL
+        )
+        
+
+      )
+    ),
+    column(6,
+       wellPanel(
+         
+         plotlyOutput("plot_grstats_scatterplot", height = "400px"),
   
-  sidebarPanel(
+         selectInput(
+           inputId = "grstats_scatter",
+           label = "Compare:",
+           selectize = TRUE,
+           multiple = FALSE,
+           choices = c(""), 
+           selected = NULL
+         ),
+
+         selectInput(
+           inputId = "grstats_scatter_type",
+           label = "Representation:",
+           selectize = FALSE,
+           multiple = FALSE,
+           choices = c("Volcano plot","FC scatter plot"), 
+           selected = "Volcano plot"
+         ),
+         
+         
+       )
+    ),
     
-    selectInput(
-      inputId = "grstats_pool",
-      label = "Pool:",
-      selectize = FALSE,
-      multiple = FALSE,
-      choices = names(all_grstats), 
-      selected = names(all_grstats)[1]
+    column(12,
+       fluidPage(
+         column(6,
+            wellPanel(
+              plotlyOutput("plot_grstats_tcplot", height = "400px")
+            )
+         ),
+         column(6,
+            wellPanel(
+              selectInput(
+                inputId = "grstats_gene",
+                label = "Gene:",
+                selectize = TRUE,
+                multiple = FALSE,
+                choices = c(""), 
+                selected = NULL
+              ),
+              
+              selectInput(
+                inputId = "grstats_genesummary",
+                label = "Show gene summaries:",
+                selectize = FALSE,
+                multiple = FALSE,
+                choices = c("Per condition","Per mouse"), 
+                selected = "Per condition"
+              )               
+            )
+         )
+       )
     ),
 
-    selectInput(
-      inputId = "grstats_volcano",
-      label = "Volcano:",
-      selectize = TRUE,
-      multiple = FALSE,
-      choices = c(""), 
-      selected = NULL
-    ),
-    
-    
-    selectInput(
-      inputId = "grstats_scatter",
-      label = "Scatter:",
-      selectize = TRUE,
-      multiple = FALSE,
-      choices = c(""), 
-      selected = NULL
-    ),
-    
-    
-    selectInput(
-      inputId = "grstats_gene",
-      label = "Gene:",
-      selectize = TRUE,
-      multiple = FALSE,
-      choices = c(""), 
-      selected = NULL
-    ),
-    
-    selectInput(
-      inputId = "grstats_genesummary",
-      label = "Show gene summaries:",
-      selectize = FALSE,
-      multiple = FALSE,
-      choices = c("Per condition","Per mouse"), 
-      selected = "Per condition"
-    )
-
-  ),
-  mainPanel(
-    
-    h3("Volcano plot for one pool"),
-    plotlyOutput("plot_grstats_volcano", height = "400px"),
-
-    h3("Pool comparisons"),
-    plotlyOutput("plot_grstats_scatterplot", height = "400px"),
-    
-    h3("Relative abundance over time"),
-    plotlyOutput("plot_grstats_tcplot", height = "400px"),
-    
-  )
 )
 
 ################################################################################

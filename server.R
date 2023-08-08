@@ -67,7 +67,7 @@ server <- function(input, output, session) {
   })
 
   ################################################################################
-  ########### GRstats - volcano ##################################################
+  ########### For a single screen - volcano ######################################
   ################################################################################
   
   
@@ -86,7 +86,7 @@ server <- function(input, output, session) {
         xlab(paste("FC",thecond)) + 
         ylab(paste("-log10 pval",thecond))
     } else {
-      print("missing volcando cond")
+      print("missing condition")
       theplot <- ggplot() + theme_void()
     }
     theplot  %>% ggplotly(source="plot_grstats_volcano") %>% event_register("plotly_click")
@@ -104,9 +104,9 @@ server <- function(input, output, session) {
   )  
   
   
-  ################################################################################
-  ########### GRstats - scatter ##################################################
-  ################################################################################
+################################################################################
+########### Comparison of two screens - scatter or volcano #####################
+################################################################################
 
   get_current_scatter <- function(){
     current_pool <- input$grstats_pool
@@ -128,20 +128,41 @@ server <- function(input, output, session) {
     grstats <- all_grstats[[current_pool]]
     thecond <- input$grstats_scatter
     
+    represent_as <- input$grstats_scatter_type
+    
+    
     if(thecond %in% names(grstats$scatterplot)){
       toplot <- grstats$scatterplot[[thecond]]
-      thecond2 <- str_split_fixed(thecond," ",2)
+      thecond2 <- str_split_fixed(thecond," / ",2)  #hopefully works
       cond1 <- thecond2[1]
       cond2 <- thecond2[2]
       
-      fc_range <- range(c(toplot$fc1, toplot$fc2))
-      p_range <- range(c(toplot$p1, toplot$p))
       
-      theplot <- ggplot(toplot, aes(fc1,fc2, label=gene, color=genedesc)) + geom_point(color="gray") + geom_text()+#size=1) +
-            xlab(paste("FC",cond1)) + ylab(paste("FC",cond2)) +
-            xlim(fc_range[1], fc_range[2]) + ylim(fc_range[1], fc_range[2])
+      if(represent_as=="FC scatter plot"){
+        
+        fc_range <- range(c(toplot$fc1, toplot$fc2))
+        theplot <- ggplot(toplot, aes(fc1,fc2, label=gene, color=genedesc)) + geom_point(color="gray") + geom_text()+#size=1) +
+          xlab(paste("FC",cond1)) + ylab(paste("FC",cond2)) +
+          xlim(fc_range[1], fc_range[2]) + ylim(fc_range[1], fc_range[2])
+        
+      } else {
+        
+        theplot <- ggplot(toplot, aes(diff_fc, diff_log_p, label=gene, color=genedesc)) + 
+          geom_point(color="gray") + 
+          geom_text() +
+          xlab(paste("FC",thecond)) + 
+          ylab(paste("-log10 pval",thecond))
+        
+        
+        #     ggplot(toplot, aes(delta_fc,log_p, label=gene, color=genedesc)) + geom_point(color="gray") + geom_text(size=1) +
+        #       xlab(paste("FC BL6 P - FC RAG1KO P")) + ylab(paste("log10 -pval")) 
+        #     ggsave(file.path(dir_fancyplot, paste(current_pool, "comparisonDELTA P.pdf")))
+        
+        
+      }
+      
     } else {
-      print("missing scatter cond")
+      print("missing comparison cond")
       theplot <- ggplot() + theme_void()
     }
     theplot %>% ggplotly(source="plot_grstats_scatterplot") %>% event_register("plotly_click")
